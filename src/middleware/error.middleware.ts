@@ -3,9 +3,9 @@ import HttpException from '../exeptions/http.exeption';
 
 function errorMiddleware(
   error: HttpException,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) {
   const statusCode = error.status || 500;
   const message = error.message || 'Something went wrong';

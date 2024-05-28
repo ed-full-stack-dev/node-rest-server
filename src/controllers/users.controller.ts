@@ -13,13 +13,13 @@ class UsersController {
     this.router.get(this.path, this.getAllUsers);
   }
 
-  logRequestDetails = (request: express.Request, response: express.Response, next: express.NextFunction) => {
+  logRequestDetails = (request: express.Request, _response: express.Response, next: express.NextFunction) => {
     console.log(`[${request.method}]: ${request.originalUrl}  [${new Date().getTime()}]`);
     next();
 };
 
 
-  getAllUsers = (request: express.Request, response: express.Response) => {
+  getAllUsers = (_request: express.Request, response: express.Response) => {
     response.send([
       {
         id: 1,

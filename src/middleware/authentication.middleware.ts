@@ -6,7 +6,7 @@ import GenericHttpException from '../exeptions/generic.exeption';
 interface RequestWithUser extends Request {
     user?: User;
 }
-async function authenticationMiddleware(request: RequestWithUser, response: Response, next: NextFunction) {
+async function authenticationMiddleware(request: RequestWithUser, _response: Response, next: NextFunction) {
     const { authorization } = request.headers;
 
     if (!authorization) {

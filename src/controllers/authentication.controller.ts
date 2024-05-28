@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken';
 import storeService from '../services/store.service';
 import validationMiddleware from '../middleware/validation.middleware';
 import dotenv from 'dotenv';
-import User from '../interfaces/user.interace';
 import GenericHttpException from '../exeptions/generic.exeption';
 import loginDTO from '../DTO/login.dto';
 dotenv.config();
@@ -37,7 +36,7 @@ class AuthenticationController implements Controller {
             const hashedPassword = await bcrypt.hash(userData.password, 10);
             const user = await this.user.create({ ...userData, password: hashedPassword },);
             const createdUser = { ...user.toObject() };
-            const { id, name, email } = createdUser;
+            const { id } = createdUser;
             const tokenData = this.createToken(id);
             response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
             response
@@ -70,7 +69,7 @@ class AuthenticationController implements Controller {
             next(new GenericHttpException(400, 'Wrong credentials provided'));
         }
     }
-    private logout = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+    private logout = async (_request: express.Request, response: express.Response, _next: express.NextFunction) => {
         response.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
         response.status(200).send({
             message: 'Logged out',
