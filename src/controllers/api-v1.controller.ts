@@ -1,7 +1,6 @@
 import express from 'express';
 import storeService from '../services/store.service';
-
-
+import authenticationMiddleware from '../middleware/authentication.middleware';
 class ApiV1Controller {
   public path = '/api/v1';
   public router = express.Router();
@@ -11,11 +10,12 @@ class ApiV1Controller {
   }
 
   public initializeRoutes() {
-    this.router.get(`${this.path}/:collection`, this.getAll);
-    this.router.get(`${this.path}/:collection/:id`, this.getById);
-    this.router.post(`${this.path}/:collection`, this.create);
-    this.router.patch(`${this.path}/:collection/:id`, this.update);
-    this.router.delete(`${this.path}/:collection/:id`, this.delete);
+      this.router.all(`${this.path}/*`, authenticationMiddleware);
+      this.router.get(`${this.path}/:collection`, this.getAll);
+      this.router.get(`${this.path}/:collection/:id`, this.getById);
+      this.router.post(`${this.path}/:collection`, this.create);
+      this.router.patch(`${this.path}/:collection/:id`, this.update);
+      this.router.delete(`${this.path}/:collection/:id`, this.delete);
   }
 
   getById = async (request: express.Request, response: express.Response) => {
