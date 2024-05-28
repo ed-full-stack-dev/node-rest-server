@@ -5,7 +5,7 @@
 This project is structured to support a TypeScript-based application with a clear separation of concerns. It includes controllers, data transfer objects (DTOs), exception handling, interfaces, middleware, models, scripts, services, and utilities.
 
 ## Project Structure
-
+```
 src
 ├── controllers
 │ ├── api-v1.controller.ts
@@ -34,7 +34,7 @@ src
 │ └── store.service.ts
 └── utils
 └── log-request-details.ts
-
+```
 
 ### Controllers
 
