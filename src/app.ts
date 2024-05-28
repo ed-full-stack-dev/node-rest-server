@@ -1,8 +1,9 @@
-import express from 'express';
+import express  from 'express';
 import Controller from './interfaces/controller.interface';
 import mongoose from 'mongoose';
 import middlewares from './utils/middleware';
 import dotenv from 'dotenv';
+import errorMiddleware from './middleware/error.middleware';
 dotenv.config();
 mongoose.set('strictQuery', false);
 class App {
@@ -14,11 +15,15 @@ class App {
         this.connectToDatabase();
         this.initializeMiddewares();
         this.initializeControllers(controllers);
+        this.initializeErrorHandling();
     }
 
     private initializeMiddewares() {
         this.app.use(middlewares);
     }
+    private initializeErrorHandling() {
+        this.app.use(errorMiddleware);
+      }
     private initializeControllers(controllers: Controller[]) {
         controllers.forEach((controller) => {
             this.app.use('/', controller.router);

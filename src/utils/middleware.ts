@@ -5,7 +5,9 @@ import { expressjwt } from 'express-jwt';
 import jwt from 'jsonwebtoken';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
+import logRequestDetails from './log-request-details';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 const jwtOptions: {
@@ -30,6 +32,7 @@ const middlewares: RequestHandler[] = [
   cookieParser(),
   cors(corsOptions),
   expressjwt(jwtOptions),
+  logRequestDetails,
 ];
 
 
