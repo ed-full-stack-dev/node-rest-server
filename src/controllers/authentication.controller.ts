@@ -40,7 +40,12 @@ class AuthenticationController implements Controller {
             const { id, name, email } = createdUser;
             const tokenData = this.createToken(id);
             response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-            response.status(201).send({ name, email });
+            response
+            .status(201)
+            .send({ 
+                success: true,
+                token: tokenData.token,
+             });
         }
 
     }
@@ -52,7 +57,12 @@ class AuthenticationController implements Controller {
             if (isPasswordMatching) {
                 const tokenData = this.createToken(user.id);
                 response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-                response.send();
+                response
+                .status(200)
+                .send({
+                    success: true,
+                    token: tokenData.token,
+                });
             } else {
                 next(new GenericHttpException(400, 'Wrong credentials provided'));
             }
