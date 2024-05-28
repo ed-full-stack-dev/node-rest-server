@@ -8,6 +8,7 @@ import validationMiddleware from '../middleware/validation.middleware';
 import dotenv from 'dotenv';
 import User from '../interfaces/user.interace';
 import GenericHttpException from '../exeptions/generic.exeption';
+import loginDTO from '../DTO/login.dto';
 dotenv.config();
 
 
@@ -22,7 +23,7 @@ class AuthenticationController implements Controller {
 
     private initializeRoutes() {
         this.router.post(`${this.path}/register`, validationMiddleware(UserDTO), this.register);
-        this.router.post(`${this.path}/login`, this.login);
+        this.router.post(`${this.path}/login`, validationMiddleware(loginDTO), this.login);
         this.router.post(`${this.path}/logout`, this.logout);
     }
 
@@ -32,17 +33,39 @@ class AuthenticationController implements Controller {
         if (userExists) {
             next(new GenericHttpException(400, 'User already exists'));
         }
-        const hashedPassword = await bcrypt.hash(userData.password, 10);
-        const user = await this.user.create({ ...userData, password: hashedPassword }, );
-        const createdUser = { ...user.toObject() }; 
-        const { id, name, email } = createdUser;
-        const tokenData = this.createToken(id);
-        response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
-        response.send({name, email});
-        
+        else {
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
+            const user = await this.user.create({ ...userData, password: hashedPassword },);
+            const createdUser = { ...user.toObject() };
+            const { id, name, email } = createdUser;
+            const tokenData = this.createToken(id);
+            response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+            response.status(201).send({ name, email });
+        }
+
     }
-    private login = async (request: express.Request, response: express.Response, next: express.NextFunction) => {}
-    private logout = async (request: express.Request, response: express.Response, next: express.NextFunction) => {}
+    private login = async (request: express.Request, response: express.Response, next: express.NextFunction) => { 
+        const loginData: loginDTO = request.body;
+        const user = await this.user.findOne({ email: loginData.email });
+        if (user) {
+            const isPasswordMatching = await bcrypt.compare(loginData.password, user.password);
+            if (isPasswordMatching) {
+                const tokenData = this.createToken(user.id);
+                response.setHeader('Set-Cookie', [this.createCookie(tokenData)]);
+                response.send();
+            } else {
+                next(new GenericHttpException(400, 'Wrong credentials provided'));
+            }
+        } else {
+            next(new GenericHttpException(400, 'Wrong credentials provided'));
+        }
+    }
+    private logout = async (request: express.Request, response: express.Response, next: express.NextFunction) => {
+        response.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
+        response.status(200).send({
+            message: 'Logged out',
+        });
+    }
     private createToken(userId: string) {
         const expiresIn = 60 * 60; // an hour
         const secret = process.env.JWT_SECRET as string;
