@@ -1,6 +1,8 @@
 import { Schema, model, Document, Types } from "mongoose";
 import User from "../interfaces/user.interace";
 
+
+
 const userSchema = new Schema<User>({
     name: String,
     email: String,
@@ -27,6 +29,6 @@ userSchema.set('toJSON', {
         }
 });
 
-const userModel = model<User & Document>('User', userSchema);
+const userModel = model<User & Document<User>>('User', userSchema);
 
 export default userModel;

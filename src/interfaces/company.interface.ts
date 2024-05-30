@@ -1,4 +1,4 @@
-interface Company {
+interface Company extends Datum{
     name: string;
     location: string;
     slogan?: string;

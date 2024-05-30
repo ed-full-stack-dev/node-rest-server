@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import * as jwt from 'jsonwebtoken';
-import storeService from '../services/store.service';
 import User from '../interfaces/user.interace';
 import GenericHttpException from '../exeptions/generic.exeption';
+import verifyToken from '../utils/verify-token';
 interface RequestWithUser extends Request {
     user?: User;
 }
@@ -14,13 +13,8 @@ async function authenticationMiddleware(request: RequestWithUser, _response: Res
         return;
     }
 
-    const token = authorization.split(' ')[1];
-    const secret = process.env.JWT_SECRET as string;
-
     try {
-        const verificationResponse = jwt.verify(token, secret) as {id: string};
-        const user = await storeService.Users.findById(verificationResponse.id);
-
+        const user = await verifyToken(authorization, false);
         if (user) {
             request.user = user;
             next();
@@ -30,9 +24,9 @@ async function authenticationMiddleware(request: RequestWithUser, _response: Res
     } catch (error) {
         next(new GenericHttpException(401, 'Wrong authentication token'));
     }
-    
+
 }
 
 export default authenticationMiddleware;
 
- 
+

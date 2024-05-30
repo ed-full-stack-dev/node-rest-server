@@ -32,6 +32,6 @@ companySchema.set('toJSON', {
     transform: function (_doc, ret) { delete ret._id }
 });
 
-const companyModel = model<Company & Document>('Company', companySchema);
+const companyModel = model<Company & Document<Company>>('Company', companySchema);
 
 export default companyModel;
