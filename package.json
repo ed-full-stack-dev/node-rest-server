@@ -10,7 +10,8 @@
     "start": "node dist/server.js",
     "compile": "tsc && node dist/server.js",
     "dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run compile\"",
-    "postinstall": "tsc"
+    "postinstall": "tsc",
+    "vercel-build": "tsc"
   },
   "repository": {
     "type": "git",
